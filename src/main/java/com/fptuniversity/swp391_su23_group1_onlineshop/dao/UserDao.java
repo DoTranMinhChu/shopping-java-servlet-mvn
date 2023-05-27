@@ -52,6 +52,43 @@ public class UserDao {
         return user;
     }
 
+    public static User getInfoUserById(int userId) {
+        User user = null;
+
+        try ( Connection cn = ConnectionDB.makeConnection()) {
+
+            if (cn != null) {
+                String sqlQuery = "SELECT id, email,avatar,password,fullname,username,phone,user_role,address,created_at,deleted_at \n"
+                        + "FROM users \n"
+                        + "WHERE id = ?";
+                PreparedStatement pst = cn.prepareStatement(sqlQuery);
+                pst.setInt(1, userId);
+                ResultSet rs = pst.executeQuery();
+                // step 3 :
+                if (!rs.next()) {
+                    return null;
+                } else {
+                    int id = rs.getInt("id");
+                    String email = rs.getString("email");
+                    String password = rs.getString("password");
+                    String avatar = rs.getString("avatar");
+                    String fullname = rs.getString("fullname");
+                    String phone = rs.getString("phone");
+                    String username = rs.getString("username");
+                    String address = rs.getString("address");
+                    String userRole = rs.getString("user_role");
+                    Date createdAt = rs.getDate("created_at");
+                    Date deletedAt = rs.getDate("deleted_at");
+                    user = new User(id, avatar, email, password, fullname, username, address, phone, userRole, createdAt, deletedAt);
+                }
+            }
+            cn.close();
+        } catch (Exception ex) {
+            Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return user;
+    }
+
     public static User getInfoUserByUsername(String usernameCheck) {
         User user = null;
 

@@ -21,9 +21,7 @@ public class ConnectionDB {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             String url = "jdbc:sqlserver://" + Config.SERVER + ":" + Config.PORT_NUMBER
                     + "; databaseName=" + Config.DB_NAME;
-            System.out.println("url ===> " + url);
             conn = DriverManager.getConnection(url, Config.DB_USERNAME, Config.DB_PASSWORD);
-            System.out.println("Connect databse successfully");
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }

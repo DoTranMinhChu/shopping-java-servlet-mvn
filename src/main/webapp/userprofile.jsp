@@ -1,8 +1,4 @@
-<%-- 
-    Document   : userprofile
-    Created on : May 25, 2023, 4:15:12 PM
-    Author     : Lenovo
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>

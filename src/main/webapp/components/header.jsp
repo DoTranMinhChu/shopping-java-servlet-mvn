@@ -1,8 +1,8 @@
 <%@page import="com.fptuniversity.swp391_su23_group1_onlineshop.model.User"%>
 
 
-<% 
-    User account = (User) request.getSession().getAttribute("account_infomation");  
+<%
+    User account = (User) request.getSession().getAttribute("account_infomation");
 %>
 <div class=""flex flex-col-1 font-sans>
     <div class="bg-black text-white font-bold text-lg text-center mb-2">
@@ -36,9 +36,9 @@
         </div>
         <div>
             <%
-                if(account != null){
+                if (account != null) {
             %>
-            <h2 class="inline-block">Hello <b><%=account.getFullname()%></b></h2>
+            <h2 class="inline-block">Hello <a href="userProfile"> <b><%=account.getFullname()%></b> </a></h2>
             |
             <form class="inline-block" action="logout" method="POST">
                 <button type="submit">
@@ -46,7 +46,7 @@
                 </button>
             </form>
             <%
-            }else{
+            } else {
             %>
             <a href="login">
                 Login
@@ -56,7 +56,7 @@
                 Register
             </a>
             <%
-          }
+                }
             %>
 
 
