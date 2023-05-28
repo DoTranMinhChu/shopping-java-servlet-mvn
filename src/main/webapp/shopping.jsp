@@ -40,16 +40,16 @@
                 parRating = null;
             }
 
-
+            int isSelected;
         %>
         <jsp:include page="components/header.jsp" />
-        <div class="container mx-auto p-6">
-            <h1 class="text-3xl font-bold mb-4">Product Filtering</h1>
-            <div class="bg-white rounded flex">
-                <div class="w-1/3">
+        <div class="py-8 my-3 w-full text-black text-center font-semibold text-2xl" style="background-color: #a8a8a8">SHOPPING PAGE</div>
+        <div class='flex flex-1 justify-between'>
+            <div class="ml-6" style="width: 350px">
+                <div class='flex flex-col p-6' style="background-color: #F4F4F4">
+                    <h1 class="text-xl font-semibold mb-4">SEARCH <span style="color: #FF7315">HERE</span></h1>
                     <form method="get" action="shop">
                         <div class="mb-4">
-                            <label class="block mb-2" for="productName">Product Name:</label>
                             <input type="text" id="productName" name="productName" <%=parProductName != null ? "value=" + parProductName : ""%>  class="border border-gray-300 rounded-md py-2 px-4 w-full">
                         </div>
 
@@ -62,10 +62,6 @@
                             <label class="block mb-2" for="maxPrice">Max Price:</label>
                             <input type="number" id="maxPrice" name="maxPrice" <%=parMaxPricePrice != null ? "value=" + Float.parseFloat(parMaxPricePrice) : ""%> " class="border border-gray-300 rounded-md py-2 px-4 w-full">
                         </div>
-                        <div class="mb-4">
-                            <label class="block mb-2" for="rating">Rating</label>
-                            <input type="number" id="rating" name="rating" value="<%=parRating != null ? "value=" + Float.parseFloat(parRating) : ""%> " class="border border-gray-300 rounded-md py-2 px-4 w-full">
-                        </div>
 
                         <div class="mb-4">
                             <label class="block mb-2" for="categoryId">Category:</label>
@@ -76,7 +72,6 @@
                                 <!-- Add more category options as needed -->
                             </select>
                         </div>
-
                         <div class="mb-4">
                             <label class="block mb-2" for="colorId">Color:</label>
                             <select id="colorId" name="colorId" class="border border-gray-300 rounded-md py-2 px-4 w-full">
@@ -94,14 +89,22 @@
                                 <!-- Add more color options as needed -->
                             </select>
                         </div>
+                        <div class="mb-4">
+                            <label class="block mb-2" for="rating">Rating</label>
+                            <input type="number" id="rating" name="rating" value="<%=parRating != null ? "value=" + Float.parseFloat(parRating) : ""%> " class="border border-gray-300 rounded-md py-2 px-4 w-full">
+                        </div>
 
                         <div class="mt-8">
                             <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md">Filter</button>
                         </div>
                     </form>
-                </div>
-
-                <div class="w-full p-6">
+                </div> 
+            </div>
+            <div class='ml-6 w-full'>
+                <div class="p-6 flex flex-1 justify-between" style="align-self: center">
+                    <div class='font-semibold text-lg'>
+                        Showing all N Results
+                    </div>
                     <div class="sorting-bar">
                         <label for="sort-select">Sort By:</label>
                         <select id="sort-select" onchange="appendParameter('sort', this.value)">
@@ -115,50 +118,44 @@
                             <option value="price~DESC">Sort by Price: High to Low</option>
                         </select>
                     </div>
-                    <div class="product-list">
-                        <%
-                            ArrayList<Product> listProducts = (ArrayList<Product>) request.getAttribute("listProducts");
-                            for (int i = 0; i < listProducts.size(); i++) {
-                                Product item = listProducts.get(i);
-                                int productId = item.getId();
-                                String productThumbnailUrl = item.getThumbnailUrl();
-                                String productName = item.getName();
-                                float productPrice = item.getPrice();
-                        %>
-                        <a class="product-card" href="?id=<%=productId%>">
-                            <img class="product-image" src="<%=productThumbnailUrl%>" alt="<%=productName%>">
-                            <h2 class="text-lg font-bold"><%=productName%></h2>
-                            <p><%=productPrice%></p>
-                        </a>
-                        <%
-                            }
-                        %>
+
+                </div>
+                <div class="product-list w-full flex flex-1 justify-center text-center">
+                    <%
+                        ArrayList<Product> listProducts = (ArrayList<Product>) request.getAttribute("listProducts");
+                        for (int i = 0; i < listProducts.size(); i++) {
+                            Product item = listProducts.get(i);
+                            int productId = item.getId();
+                            String productThumbnailUrl = item.getThumbnailUrl();
+                            String productName = item.getName();
+                            float productPrice = item.getPrice();
+                    %>
+                    <a class="product-card " href="?id=<%=productId%>">
+                        <img class="product-image" src="<%=productThumbnailUrl%>" alt="<%=productName%>">
+                        <h2 class="text-lg font-bold"><%=productName%></h2>
+                        <p><%=productPrice%></p>
+                    </a>
+                    <%
+                        }
+                    %>
 
 
-                    </div>
-
-                    <div class="flex"> 
-                        <%
-                            int totalPage = (int) request.getAttribute("totalPage");
-                            for (int i = 1; i <= totalPage; i++) {
-                        %>
-                        <button onclick="appendParameter('page',<%=i%>)" class="bg-red-200 p-2 m-2"><%=i%></button>
-
-                        <%
-                            }
-                        %>
-                    </div>
                 </div>
 
+                <div class="flex flex-1 justify-end mr-10"> 
+                    <%
+                        int totalPage = (int) request.getAttribute("totalPage");
+                        for (int i = 1; i <= totalPage; i++) {
+                    %>
+                    <button onclick="appendParameter('page',<%=i%>);" class="px-4 py-2  m-2" style="background:#FF7315; border-radius:8px"><%=i%></button>
+                    <%
+                        }
+                    %>
+                </div>
             </div>
-
-
         </div>
-
+        <jsp:include page="components/footer.jsp" />
     </body>
 </html>
-
-
-
 </body>
 </html>
