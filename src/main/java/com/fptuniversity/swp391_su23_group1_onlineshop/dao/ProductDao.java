@@ -100,7 +100,6 @@ public class ProductDao {
                 sqlQuery.append(" id ASC");
                 sqlQuery.append(" OFFSET ");
                 sqlQuery.append(offset).append(" ROWS \nFETCH NEXT ").append(size).append(" ROWS ONLY");
-                System.out.println("sqlQuery ===> " + sqlQuery.toString());
                 try ( Statement st = cn.createStatement();  ResultSet rs = st.executeQuery(sqlQuery.toString())) {
                     while (rs.next()) {
                         // Retrieve product details from result set and create Product objects
