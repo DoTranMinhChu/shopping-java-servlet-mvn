@@ -22,8 +22,8 @@
                 <div class="ml-32 mt-10">
                     <div class=" font-bold text-4xl ">Discover & Shop <br>The Trend Ss19</div>
                     <div class="">EXTRA 55% OFF IN SPRING SALE</div>
-                    <div>
-                        <button class="px-4 py-2 text-white mt-3" style="background: #030712; border-radius: 8px;" >Shopping now</button>
+                    <div class="mt-6">
+                        <a href="shope" class="px-4 py-2 text-white mt-3" style="background: #030712; border-radius: 8px;" >Shopping now</a>
                     </div>
                 </div>
                 <div class="absolute  bottom-0 right-0">
