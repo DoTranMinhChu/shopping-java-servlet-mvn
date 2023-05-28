@@ -39,7 +39,7 @@ public class SearchController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try {
-            int sizeProduct = 4;
+            int sizeProduct = 8;
             String parKeySearch = request.getParameter("keySearch");
             String parPageProduct = request.getParameter("pageProduct");
             String parSortProduct = request.getParameter("sortProduct");

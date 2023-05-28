@@ -72,7 +72,7 @@ public class ShoppingController extends HttpServlet {
                     orderType = parSortSlip[1];
                 }
                 int page = Integer.parseInt(parPage);
-                int size = 3;
+                int size = 6;
                 ArrayList<Product> listProducts = ProductDao.filterProducts(productName, minPrice, maxPrice, categoryId, colorId, rating, page, size, orderBy, orderType);
                 int count = ProductDao.countFilterProducts(productName, minPrice, maxPrice, categoryId, colorId, rating);
                 int totalPage = (int) Math.ceil((double) count / (double) size);
