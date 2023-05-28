@@ -10,7 +10,7 @@
     </div>
     <div class="flex flex-1 justify-between mx-8">
         <div>
-            <a class="font-extrabold text-2xl" href="./">Mon'sa</a>
+            <a class="font-extrabold text-2xl" href="home">Mon'sa</a>
         </div>
         <div class="flex flex-1 justify-center font-bold text-lg">
             <div class="mx-2">

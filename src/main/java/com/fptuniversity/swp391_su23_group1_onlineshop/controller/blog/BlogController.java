@@ -4,7 +4,6 @@
  */
 package com.fptuniversity.swp391_su23_group1_onlineshop.controller.blog;
 
-import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -13,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import com.fptuniversity.swp391_su23_group1_onlineshop.model.Post;
 import com.fptuniversity.swp391_su23_group1_onlineshop.dao.PostDao;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.annotation.WebServlet;
 
 /**
@@ -41,11 +41,14 @@ public class BlogController extends HttpServlet {
         try {
 
             String id = request.getParameter("id");
+
             if (id != null) {
+                int idPost = Integer.parseInt(id);
                 Post post = PostDao.getPostById(Integer.parseInt(id));
                 url = BLOG_DETAIL_JSP;
                 request.setAttribute("post", post);
             } else {
+
                 String parSort = request.getParameter("sort");
                 String parPage = request.getParameter("page");
                 if (parPage == null || parPage.isEmpty()) {

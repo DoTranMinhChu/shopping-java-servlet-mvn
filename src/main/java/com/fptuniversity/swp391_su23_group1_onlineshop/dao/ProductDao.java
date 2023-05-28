@@ -100,6 +100,7 @@ public class ProductDao {
                 sqlQuery.append(" id ASC");
                 sqlQuery.append(" OFFSET ");
                 sqlQuery.append(offset).append(" ROWS \nFETCH NEXT ").append(size).append(" ROWS ONLY");
+                System.out.println("sqlQuery ===> " + sqlQuery.toString());
                 try ( Statement st = cn.createStatement();  ResultSet rs = st.executeQuery(sqlQuery.toString())) {
                     while (rs.next()) {
                         // Retrieve product details from result set and create Product objects
@@ -117,8 +118,7 @@ public class ProductDao {
                         Date deletedAt = rs.getDate("deleted_at");
                         int orderCount = rs.getInt("order_count");
                         Product product = new Product(id, name, thumbnailUrl, description, price, percentDiscount,
-                                quantity, fetchedCategoryId, totalRating, createdAt, deletedAt);
-                        System.out.println("orderCount ==> "+orderCount);
+                                quantity, fetchedCategoryId, totalRating, createdAt, deletedAt);;
                         product.setOrderCount(orderCount);
                         filteredList.add(product);
 
@@ -299,5 +299,84 @@ public class ProductDao {
         }
 
         return false;
+    }
+
+    public static Product getNewProduct() {
+        Product product = null;
+        try ( Connection cn = ConnectionDB.makeConnection()) {
+            if (cn != null) {
+                String sqlQuery = "SELECT id, name, thumbnail_url, description, price, percent_discount, quantity, category_id, total_rating, created_at, deleted_at\n"
+                        + "FROM products\n"
+                        + "ORDER BY created_at DESC\n"
+                        + "OFFSET 0 ROWS\n"
+                        + "FETCH NEXT 1 ROWS ONLY;";
+
+                try ( PreparedStatement ps = cn.prepareStatement(sqlQuery)) {
+                    try ( ResultSet rs = ps.executeQuery()) {
+                        if (rs.next()) {
+                            int id = rs.getInt("id");
+                            String name = rs.getString("name");
+                            String thumbnailUrl = rs.getString("thumbnail_url");
+                            String description = rs.getString("description");
+                            float price = rs.getFloat("price");
+                            float percentDiscount = rs.getFloat("percent_discount");
+                            int quantity = rs.getInt("quantity");
+                            int categoryId = rs.getInt("category_id");
+                            float totalRating = rs.getFloat("total_rating");
+                            Date createdAt = rs.getDate("created_at");
+                            Date deletedAt = rs.getDate("deleted_at");
+                            return new Product(id, name, thumbnailUrl, description, price, percentDiscount,
+                                    quantity, categoryId, totalRating, createdAt, deletedAt);
+
+                        }
+                    }
+                }
+            }
+
+            cn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return product;
+    }
+
+    public static ArrayList<Product> getBestSaler(int top) {
+        ArrayList<Product> list = new ArrayList<>();
+        try ( Connection cn = ConnectionDB.makeConnection()) {
+            if (cn != null) {
+                String sqlQuery = "SELECT DISTINCT p.id, p.name, p.thumbnail_url, p.description, p.price, p.percent_discount, p.quantity,  p.category_id, p.total_rating, p.created_at, p.deleted_at, COUNT(od.id) AS order_count \n"
+                        + "FROM products p  LEFT JOIN order_detail od ON p.id = od.product_id  \n"
+                        + "GROUP BY p.id, p.name, p.thumbnail_url, p.description, p.price, p.percent_discount, p.quantity, p.category_id, p.total_rating, p.created_at, p.deleted_at \n"
+                        + "ORDER BY COUNT(od.id) DESC \n"
+                        + "OFFSET 0 ROWS \n"
+                        + "FETCH NEXT " + top + " ROWS ONLY";
+
+                try ( Statement st = cn.createStatement();  ResultSet rs = st.executeQuery(sqlQuery)) {
+                    while (rs.next()) {
+                        int id = rs.getInt("id");
+                        String name = rs.getString("name");
+                        String thumbnailUrl = rs.getString("thumbnail_url");
+                        String description = rs.getString("description");
+                        float price = rs.getFloat("price");
+                        float percentDiscount = rs.getFloat("percent_discount");
+                        int quantity = rs.getInt("quantity");
+                        int categoryId = rs.getInt("category_id");
+                        float totalRating = rs.getFloat("total_rating");
+                        Date createdAt = rs.getDate("created_at");
+                        Date deletedAt = rs.getDate("deleted_at");
+
+                        Product product = new Product(id, name, thumbnailUrl, description, price, percentDiscount,
+                                quantity, categoryId, totalRating, createdAt, deletedAt);
+                        list.add(product);
+                    }
+
+                }
+            }
+
+            cn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
     }
 }
