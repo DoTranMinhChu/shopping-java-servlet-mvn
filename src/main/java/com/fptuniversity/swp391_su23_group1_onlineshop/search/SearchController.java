@@ -4,13 +4,18 @@
  */
 package com.fptuniversity.swp391_su23_group1_onlineshop.search;
 
+import com.fptuniversity.swp391_su23_group1_onlineshop.dao.PostDao;
+import com.fptuniversity.swp391_su23_group1_onlineshop.dao.ProductDao;
+import com.fptuniversity.swp391_su23_group1_onlineshop.model.Post;
+import com.fptuniversity.swp391_su23_group1_onlineshop.model.Product;
+import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 
 /**
  *
@@ -33,17 +38,57 @@ public class SearchController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet SearchController</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet SearchController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        try {
+            int size = 4;
+            String parKeySearch = request.getParameter("keySearch");
+            System.out.println("parKeySearch ===> " + parKeySearch);
+            String parPageProduct = request.getParameter("pageProduct");
+            String parSortProduct = request.getParameter("sortProduct");
+            if (parPageProduct == null || parPageProduct.isEmpty()) {
+                parPageProduct = "1";
+            }
+            String keySearch = (parKeySearch != null && !parKeySearch.isEmpty()) ? parKeySearch : null;
+
+            String orderByProduct = null;
+            String orderTypeProduct = null;
+            if (parSortProduct != null && !parSortProduct.isEmpty() && !"none".equals(parSortProduct)) {
+                String[] parSortSlip = parSortProduct.split("~");
+                orderByProduct = parSortSlip[0];
+                orderTypeProduct = parSortSlip[1];
+            }
+            int pageProduct = Integer.parseInt(parPageProduct);
+
+            ArrayList<Product> listProducts = ProductDao.filterProducts(keySearch, null, null, null, null, null, pageProduct, size, orderByProduct, orderTypeProduct);
+            int countProduct = ProductDao.countFilterProducts(keySearch, null, null, null, null, null);
+            int totalPageProduct = (int) Math.ceil((double) countProduct / (double) size);
+            System.out.println("listProducts ===> " + listProducts.size());
+            request.setAttribute("listProducts", listProducts);
+            request.setAttribute("totalPageProduct", totalPageProduct);
+
+            String parPagePost = request.getParameter("pagePost");
+            String parSortPost = request.getParameter("sortPost");
+            if (parPagePost == null || parPagePost.isEmpty()) {
+                parPagePost = "1";
+            }
+
+            String orderByPost = null;
+            String orderTypePost = null;
+            if (parSortPost != null && !parSortPost.isEmpty() && !"none".equals(parSortPost)) {
+                String[] parSortSlip = parSortPost.split("~");
+                orderByPost = parSortSlip[0];
+                orderTypePost = parSortSlip[1];
+            }
+            int pagePost = Integer.parseInt(parPagePost);
+
+            ArrayList<Post> listPosts = PostDao.filterPosts(keySearch, pagePost, size, orderByPost, orderTypePost);
+            int count = PostDao.countFilterPosts(keySearch);
+            int totalPagePost = (int) Math.ceil((double) count / (double) size);
+            request.setAttribute("totalPagePost", totalPagePost);
+            request.setAttribute("listPosts", listPosts);
+        } catch (Exception e) {
+        } finally {
+            RequestDispatcher dispatcher = request.getRequestDispatcher(SUCCESS_JSP);
+            dispatcher.forward(request, response);
         }
     }
 

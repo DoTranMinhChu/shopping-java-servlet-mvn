@@ -58,6 +58,68 @@ public class PostDao {
         return postList;
     }
 
+    public static ArrayList<Post> filterPosts(String key, int page, int size, String orderBy, String orderType) {
+        ArrayList<Post> postList = new ArrayList<>();
+        int offset = size * (page - 1);
+        try ( Connection cn = ConnectionDB.makeConnection()) {
+            if (cn != null) {
+                StringBuilder sqlQuery = new StringBuilder("SELECT id, thumbnail_url, user_id, title, sort_description, content, created_at, deleted_at FROM posts ");
+                sqlQuery.append("WHERE 1=1");
+
+                if (key != null && !key.isEmpty()) {
+                    sqlQuery.append(" AND title LIKE '%").append(key).append("%' ");
+                }
+                sqlQuery.append(" ORDER BY ");
+                if (orderBy != null && !orderBy.isEmpty()) {
+                    sqlQuery.append(orderBy).append(" ").append(orderType).append(" , ");
+                }
+                sqlQuery.append(" id ASC ");
+                sqlQuery.append(" OFFSET ").append(offset).append(" ROWS \nFETCH NEXT ").append(size).append(" ROWS ONLY");
+                try ( Statement st = cn.createStatement();  ResultSet rs = st.executeQuery(sqlQuery.toString())) {
+                    while (rs.next()) {
+                        int id = rs.getInt("id");
+                        String thumbnailUrl = rs.getString("thumbnail_url");
+                        int userId = rs.getInt("user_id");
+                        String title = rs.getString("title");
+                        String shortDescription = rs.getString("sort_description");
+                        String content = rs.getString("content");
+                        Date createdAt = rs.getDate("created_at");
+                        Date deletedAt = rs.getDate("deleted_at");
+
+                        Post post = new Post(id, thumbnailUrl, userId, title, shortDescription, content, createdAt, deletedAt);
+                        postList.add(post);
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PostDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return postList;
+    }
+
+    public static int countFilterPosts(String key) {
+
+        try ( Connection cn = ConnectionDB.makeConnection()) {
+            if (cn != null) {
+                String sqlQuery = "SELECT COUNT(*) AS count\n"
+                        + "FROM posts";
+                if (key != null && !key.isEmpty()) {
+                    sqlQuery += " WHERE title LIKE '%" + key + "%' ";
+                }
+                try ( Statement st = cn.createStatement();  ResultSet rs = st.executeQuery(sqlQuery)) {
+                    while (rs.next()) {
+                        return rs.getInt("count");
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PostDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return 0;
+    }
+
     public static int countAllPosts() {
 
         try ( Connection cn = ConnectionDB.makeConnection()) {

@@ -47,7 +47,7 @@
             <h1 class="text-3xl font-bold mb-4">Product Filtering</h1>
             <div class="bg-white rounded flex">
                 <div class="w-1/3">
-                    <form method="get" action="shopping">
+                    <form method="get" action="shop">
                         <div class="mb-4">
                             <label class="block mb-2" for="productName">Product Name:</label>
                             <input type="text" id="productName" name="productName" <%=parProductName != null ? "value=" + parProductName : ""%>  class="border border-gray-300 rounded-md py-2 px-4 w-full">
