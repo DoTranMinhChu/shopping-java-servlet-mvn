@@ -16,8 +16,8 @@
     </head>
     <body>
         <jsp:include page="components/header.jsp" />
-        <div class="container mx-auto p-12">
-            <h1 class="text-3xl font-bold mb-4">Blog</h1>
+        <div class="py-8 my-3 w-full text-black text-center font-semibold text-2xl" style="background-color: #a8a8a8">TIN TỨC THỜI TRANG</div>
+        <div class="container mx-auto">
             <div class="sorting-bar">
                 <label for="sort-select">Sort By:</label>
                 <select id="sort-select" onchange="appendParameter('sort', this.value)">
@@ -40,41 +40,38 @@
                         Date postCreatedAt = item.getCreatedAt();
 
                 %>
-                <div class="bg-white rounded shadow flex">
-                    <div class="w-1/3">
+                <div class="bg-white rounded shadow flex flex-1">
+                    <div >
                         <img class="w-full h-64 object-cover object-center" src="<%= postThumbnailUrl%>" alt="Post Thumbnail">
                     </div>
-
-                    <div class="w-2/3 p-6 flex flex-col justify-between">
+                    <div class="p-6 flex flex-col justify-between ml-8">
                         <div>
-                            <h2 class="text-2xl font-bold mb-2 text-red-500"><%=postTitle%></h2>
-                            <p class="text-gray-500 mb-4"><%= shortDescription%></p>
+                            <h2 style="color: #fd4747" class="text-2xl font-semibold mb-3 text-red-500"><%=postTitle%></h2>
+                            <p class="text-gray-500"><%= shortDescription%></p>
                         </div>
-                        <div>
+                        <div style="font-style: italic;">
                             <a href="?id=<%= postId%>" class="text-blue-500 hover:text-purple-700">Xem chi tiết</a>
                             <p class="text-gray-700 mb-1">Tác giả - <%= "Author"%></p>
                             <i class="text-gray-700 mb-4"><%= postCreatedAt%></i>
                         </div>
-
-
                     </div>
                 </div>
                 <% } %>
-                <div class="flex"> 
-                    <%
-                        int totalPage = (int) request.getAttribute("totalPage");
-                        for (int i = 1; i <= totalPage; i++) {
-                    %>
-                    <button onclick="appendParameter('page',<%=i%>)" class="bg-red-200 p-2 m-2"><%=i%></button>
+                <div class="flex flex-1 ">
+                    <div class="flex flex-1 justify-center"> 
+                        <%
+                            int totalPage = (int) request.getAttribute("totalPage");
+                            for (int i = 1; i <= totalPage; i++) {
+                        %>
+                        <button class="px-4 py-2  m-2" style="background:#FF7315; border-radius:8px" onclick="appendParameter('page',<%=i%>)" class="bg-red-200 p-2 m-2"><%=i%></button>
 
-                    <%
-                        }
-                    %>
+                        <%
+                            }
+                        %>
+                    </div>
                 </div>
             </div>
-
         </div>
-
-
+        <jsp:include page="components/footer.jsp" />
     </body>
 </html>
