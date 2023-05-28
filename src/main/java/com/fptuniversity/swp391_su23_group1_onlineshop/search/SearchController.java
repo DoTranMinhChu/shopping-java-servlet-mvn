@@ -39,9 +39,8 @@ public class SearchController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try {
-            int size = 4;
+            int sizeProduct = 4;
             String parKeySearch = request.getParameter("keySearch");
-            System.out.println("parKeySearch ===> " + parKeySearch);
             String parPageProduct = request.getParameter("pageProduct");
             String parSortProduct = request.getParameter("sortProduct");
             if (parPageProduct == null || parPageProduct.isEmpty()) {
@@ -58,10 +57,9 @@ public class SearchController extends HttpServlet {
             }
             int pageProduct = Integer.parseInt(parPageProduct);
 
-            ArrayList<Product> listProducts = ProductDao.filterProducts(keySearch, null, null, null, null, null, pageProduct, size, orderByProduct, orderTypeProduct);
+            ArrayList<Product> listProducts = ProductDao.filterProducts(keySearch, null, null, null, null, null, pageProduct, sizeProduct, orderByProduct, orderTypeProduct);
             int countProduct = ProductDao.countFilterProducts(keySearch, null, null, null, null, null);
-            int totalPageProduct = (int) Math.ceil((double) countProduct / (double) size);
-            System.out.println("listProducts ===> " + listProducts.size());
+            int totalPageProduct = (int) Math.ceil((double) countProduct / (double) sizeProduct);
             request.setAttribute("listProducts", listProducts);
             request.setAttribute("totalPageProduct", totalPageProduct);
 
@@ -70,7 +68,7 @@ public class SearchController extends HttpServlet {
             if (parPagePost == null || parPagePost.isEmpty()) {
                 parPagePost = "1";
             }
-
+            int sizePost = 2;
             String orderByPost = null;
             String orderTypePost = null;
             if (parSortPost != null && !parSortPost.isEmpty() && !"none".equals(parSortPost)) {
@@ -80,11 +78,13 @@ public class SearchController extends HttpServlet {
             }
             int pagePost = Integer.parseInt(parPagePost);
 
-            ArrayList<Post> listPosts = PostDao.filterPosts(keySearch, pagePost, size, orderByPost, orderTypePost);
+            ArrayList<Post> listPosts = PostDao.filterPosts(keySearch, pagePost, sizePost, orderByPost, orderTypePost);
             int count = PostDao.countFilterPosts(keySearch);
-            int totalPagePost = (int) Math.ceil((double) count / (double) size);
+            int totalPagePost = (int) Math.ceil((double) count / (double) sizePost);
             request.setAttribute("totalPagePost", totalPagePost);
             request.setAttribute("listPosts", listPosts);
+
+            //
         } catch (Exception e) {
         } finally {
             RequestDispatcher dispatcher = request.getRequestDispatcher(SUCCESS_JSP);

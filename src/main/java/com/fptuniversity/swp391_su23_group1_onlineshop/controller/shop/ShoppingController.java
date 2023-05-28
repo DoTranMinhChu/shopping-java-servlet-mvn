@@ -79,6 +79,7 @@ public class ShoppingController extends HttpServlet {
                 request.setAttribute("listProducts", listProducts);
                 request.setAttribute("colors", ColorDao.getAll());
                 request.setAttribute("totalPage", totalPage);
+                request.setAttribute("count", count);
             }
         } catch (NumberFormatException e) {
         } finally {

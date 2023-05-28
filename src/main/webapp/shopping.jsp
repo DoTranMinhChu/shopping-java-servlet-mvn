@@ -103,7 +103,7 @@
             <div class='ml-6 w-full'>
                 <div class="p-6 flex flex-1 justify-between" style="align-self: center">
                     <div class='font-semibold text-lg'>
-                        Showing all N Results
+                        Showing all <%=request.getAttribute("count")%> Results
                     </div>
                     <div class="sorting-bar">
                         <label for="sort-select">Sort By:</label>
@@ -130,7 +130,7 @@
                             String productName = item.getName();
                             float productPrice = item.getPrice();
                     %>
-                    <a class="product-card " href="?id=<%=productId%>">
+                    <a class="product-card flex items-start flex-col" href="?id=<%=productId%>">
                         <img class="product-image" src="<%=productThumbnailUrl%>" alt="<%=productName%>">
                         <h2 class="text-lg font-bold"><%=productName%></h2>
                         <p><%=productPrice%></p>
