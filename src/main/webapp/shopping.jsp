@@ -10,6 +10,16 @@
         <link rel="stylesheet" href="styles/tailwindcss/tailwind-all.min.css">
         <link rel="stylesheet" href="styles/css/product.css"/>
         <script src="script/index.js"></script>
+
+        <script>
+            let params = (new URL(document.location)).searchParams;
+            let sortOrder = params.get("orderPopular");
+            function toggleSort() {
+                sortOrder = sortOrder === 'ASC' ? 'DESC' : 'ASC';
+                appendParameter("orderPopular", sortOrder);
+            }
+
+        </script>
     </head>
     <body>
         <%
@@ -83,7 +93,7 @@
                                 <option value="">--</option>
                                 <%
                                     ArrayList<Color> colors = (ArrayList<Color>) request.getAttribute("colors");
-                                    System.out.println("colors ===> "+colors.size());
+
                                     for (Color color : colors) {
                                 %>
                                 <option value=<%=color.getId()%> <%= (parColorId != null && Integer.parseInt(parColorId) == color.getId()) ? "selected" : ""%>><%=color.getName()%></option>
@@ -102,7 +112,19 @@
                 </div>
 
                 <div class="w-full p-6">
-
+                    <div class="sorting-bar">
+                        <label for="sort-select">Sort By:</label>
+                        <select id="sort-select" onchange="appendParameter('sort', this.value)">
+                            <option value="none">---</option>
+                            <option value="created_at~DESC">Sort by Latest Date</option>
+                            <option value="created_at~ASC">Sort by Oldest Date</option>
+                            <option value="name~ASC">Sort by A-Z</option>
+                            <option value="name~DESC">Sort by Z-A</option>
+                            <option value="none">Sort by Rating</option>
+                            <option value="price~ASC">Sort by Price: Low to High</option>
+                            <option value="price~DESC">Sort by Price: High to Low</option>
+                        </select>
+                    </div>
                     <div class="product-list">
                         <%
                             ArrayList<Product> listProducts = (ArrayList<Product>) request.getAttribute("listProducts");
@@ -124,6 +146,7 @@
 
 
                     </div>
+
                     <div class="flex"> 
                         <%
                             int totalPage = (int) request.getAttribute("totalPage");
@@ -141,6 +164,7 @@
 
 
         </div>
+
     </body>
 </html>
 

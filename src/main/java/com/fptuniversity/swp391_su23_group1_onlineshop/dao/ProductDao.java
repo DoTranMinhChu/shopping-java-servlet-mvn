@@ -21,16 +21,16 @@ import com.fptuniversity.swp391_su23_group1_onlineshop.model.Size;
 import com.fptuniversity.swp391_su23_group1_onlineshop.util.ConnectionDB;
 
 public class ProductDao {
-
-     public static ArrayList<Product> getAllProducts() {
+    
+    public static ArrayList<Product> getAllProducts() {
         ArrayList<Product> productList = new ArrayList<>();
-
+        
         try ( Connection cn = ConnectionDB.makeConnection()) {
             if (cn != null) {
                 String sqlQuery = "SELECT id, name, thumbnail_url, description, price, percent_discount, quantity, "
                         + "category_id, total_rating, created_at, deleted_at FROM products";
                 try ( Statement st = cn.createStatement();  ResultSet rs = st.executeQuery(sqlQuery)) {
-
+                    
                     while (rs.next()) {
                         int id = rs.getInt("id");
                         String name = rs.getString("name");
@@ -43,35 +43,36 @@ public class ProductDao {
                         float totalRating = rs.getFloat("total_rating");
                         Date createdAt = rs.getDate("created_at");
                         Date deletedAt = rs.getDate("deleted_at");
-
+                        
                         Product product = new Product(id, name, thumbnailUrl, description, price, percentDiscount,
                                 quantity, categoryId, totalRating, createdAt, deletedAt);
                         productList.add(product);
                     }
-
+                    
                 }
             }
-
+            
             cn.close();
         } catch (SQLException ex) {
             Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         return productList;
     }
-
-    public static ArrayList<Product> filterProducts(String productName, Float minPrice, Float maxPrice, Integer categoryId, Integer colorId, Float rating, int page, int size) {
+    
+    public static ArrayList<Product> filterProducts(String productName, Float minPrice, Float maxPrice, Integer categoryId, Integer colorId, Float rating, int page, int size, String orderBy, String orderType) {
         ArrayList<Product> filteredList = new ArrayList<>();
         int offset = size * (page - 1);
         try ( Connection cn = ConnectionDB.makeConnection()) {
             if (cn != null) {
                 StringBuilder sqlQuery = new StringBuilder("SELECT DISTINCT p.id, p.name, p.thumbnail_url, p.description, p.price, p.percent_discount, p.quantity, ")
-                        .append(" p.category_id, p.total_rating, p.created_at, p.deleted_at FROM products p ");
-
+                        .append(" p.category_id, p.total_rating, p.created_at, p.deleted_at, COUNT(od.id) AS order_count FROM products p ");
+                
                 if (colorId != null) {
-                    sqlQuery.append("JOIN product_color pc ON p.id = pc.product_id ");
+                    sqlQuery.append(" JOIN product_color pc ON p.id = pc.product_id ");
                 }
-                sqlQuery.append("WHERE 1=1");
+                sqlQuery.append(" LEFT JOIN order_detail od ON p.id = od.product_id ");
+                sqlQuery.append(" WHERE 1=1");
                 // Add filters based on input parameters
                 if (productName != null && !productName.isEmpty()) {
                     sqlQuery.append(" AND p.name LIKE '%").append(productName).append("%'");
@@ -91,7 +92,14 @@ public class ProductDao {
                 if (rating != null) {
                     sqlQuery.append(" AND pc.total_rating = ").append(rating);
                 }
-                sqlQuery.append("ORDER BY id OFFSET ").append(offset).append(" ROWS \nFETCH NEXT ").append(size).append(" ROWS ONLY");
+                sqlQuery.append(" GROUP BY p.id, p.name, p.thumbnail_url, p.description, p.price, p.percent_discount, p.quantity, p.category_id, p.total_rating, p.created_at, p.deleted_at");
+                sqlQuery.append(" ORDER BY ");
+                if (orderBy != null && !orderBy.isEmpty()) {
+                    sqlQuery.append(orderBy).append(" ").append(orderType).append(" , ");
+                }
+                sqlQuery.append(" id ASC");
+                sqlQuery.append(" OFFSET ");
+                sqlQuery.append(offset).append(" ROWS \nFETCH NEXT ").append(size).append(" ROWS ONLY");
                 try ( Statement st = cn.createStatement();  ResultSet rs = st.executeQuery(sqlQuery.toString())) {
                     while (rs.next()) {
                         // Retrieve product details from result set and create Product objects
@@ -102,33 +110,35 @@ public class ProductDao {
                         float price = rs.getFloat("price");
                         float percentDiscount = rs.getFloat("percent_discount");
                         int quantity = rs.getInt("quantity");
-
+                        
                         int fetchedCategoryId = rs.getInt("category_id");
                         float totalRating = rs.getFloat("total_rating");
                         Date createdAt = rs.getDate("created_at");
                         Date deletedAt = rs.getDate("deleted_at");
-
+                        int orderCount = rs.getInt("order_count");
                         Product product = new Product(id, name, thumbnailUrl, description, price, percentDiscount,
                                 quantity, fetchedCategoryId, totalRating, createdAt, deletedAt);
+                        product.setOrderCount(orderCount);
                         filteredList.add(product);
+                        
                     }
                 }
             }
-
+            
             cn.close();
         } catch (SQLException ex) {
             Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         return filteredList;
     }
-
+    
     public static int countFilterProducts(String productName, Float minPrice, Float maxPrice, Integer categoryId, Integer colorId, Float rating) {
-
+        
         try ( Connection cn = ConnectionDB.makeConnection()) {
             if (cn != null) {
                 StringBuilder sqlQuery = new StringBuilder("SELECT DISTINCT p.id FROM products p ");
-
+                
                 if (colorId != null) {
                     sqlQuery.append("JOIN product_color pc ON p.id = pc.product_id ");
                 }
@@ -158,18 +168,18 @@ public class ProductDao {
                         int count = rs.getInt("count");
                         return count;
                     }
-
+                    
                 }
             }
-
+            
             cn.close();
         } catch (SQLException ex) {
             Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         return 0;
     }
-
+    
     public static Product getProductById(int id) {
         try ( Connection cn = ConnectionDB.makeConnection()) {
             if (cn != null) {
@@ -188,7 +198,7 @@ public class ProductDao {
                             float totalRating = rs.getFloat("total_rating");
                             Date createdAt = rs.getDate("created_at");
                             Date deletedAt = rs.getDate("deleted_at");
-
+                            
                             Product product = new Product(id, name, thumbnailUrl, description, price, percentDiscount,
                                     quantity, categoryId, totalRating, createdAt, deletedAt);
                             ArrayList<Color> colors = ProductColorDao.getAllProductColorByProductId(id);
@@ -196,7 +206,7 @@ public class ProductDao {
                             ArrayList<Size> sizes = ProductSizeDao.getAllProductSizeByProductId(id);
                             product.setSizes(sizes);
                             return product;
-
+                            
                         }
                     }
                 }
@@ -204,10 +214,10 @@ public class ProductDao {
         } catch (SQLException ex) {
             Logger.getLogger(PostDao.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         return null;
     }
-
+    
     public static boolean addProduct(Product product) {
         try ( Connection cn = ConnectionDB.makeConnection()) {
             if (cn != null) {
@@ -228,16 +238,16 @@ public class ProductDao {
                     rowsAffected = ps.executeUpdate();
                 }
                 cn.close();
-
+                
                 return rowsAffected > 0;
             }
         } catch (SQLException ex) {
             Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         return false;
     }
-
+    
     public static boolean updateProduct(Product product) {
         try ( Connection cn = ConnectionDB.makeConnection()) {
             if (cn != null) {
@@ -260,16 +270,16 @@ public class ProductDao {
                     rowsAffected = ps.executeUpdate();
                 }
                 cn.close();
-
+                
                 return rowsAffected > 0;
             }
         } catch (SQLException ex) {
             Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         return false;
     }
-
+    
     public static boolean deleteProduct(int productId) {
         try ( Connection cn = ConnectionDB.makeConnection()) {
             if (cn != null) {
@@ -280,13 +290,13 @@ public class ProductDao {
                     rowsAffected = ps.executeUpdate();
                 }
                 cn.close();
-
+                
                 return rowsAffected > 0;
             }
         } catch (SQLException ex) {
             Logger.getLogger(ProductDao.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         return false;
     }
 }

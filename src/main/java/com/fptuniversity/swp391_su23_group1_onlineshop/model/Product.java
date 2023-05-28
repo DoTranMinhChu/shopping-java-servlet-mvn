@@ -26,6 +26,7 @@ public class Product {
     private Date deletedAt;
     private ArrayList<Color> colors;
     private ArrayList<Size> sizes;
+    private int orderCount;
 
     public Product() {
     }
@@ -146,6 +147,14 @@ public class Product {
 
     public void setSizes(ArrayList<Size> sizes) {
         this.sizes = sizes;
+    }
+
+    public int getOrderCount() {
+        return orderCount;
+    }
+
+    public void setOrderCount(int orderCount) {
+        this.orderCount = orderCount;
     }
 
 }

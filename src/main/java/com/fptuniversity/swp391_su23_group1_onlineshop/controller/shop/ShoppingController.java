@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import com.fptuniversity.swp391_su23_group1_onlineshop.dao.ProductDao;
 import com.fptuniversity.swp391_su23_group1_onlineshop.model.Product;
 import jakarta.servlet.annotation.WebServlet;
+import java.sql.Array;
 
 /**
  *
@@ -39,7 +40,7 @@ public class ShoppingController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         String url = SUCCESS_JSP;
-      
+
         try {
             String id = request.getParameter("id");
             if (id != null) {
@@ -54,6 +55,7 @@ public class ShoppingController extends HttpServlet {
                 String parColorId = request.getParameter("colorId");
                 String parRating = request.getParameter("rating");
                 String parPage = request.getParameter("page");
+                String parSort = request.getParameter("sort");
                 if (parPage == null || parPage.isEmpty()) {
                     parPage = "1";
                 }
@@ -63,9 +65,16 @@ public class ShoppingController extends HttpServlet {
                 Integer categoryId = (parCategoryId != null && !parCategoryId.isEmpty()) ? Integer.parseInt(parCategoryId) : null;
                 Integer colorId = (parColorId != null && !parColorId.isEmpty()) ? Integer.parseInt(parColorId) : null;
                 Float rating = (parRating != null && !parRating.isEmpty()) ? Float.parseFloat(parRating) : null;
+                String orderBy = null;
+                String orderType = null;
+                if (parSort != null && !parSort.isEmpty() && !"none".equals(parSort)) {
+                    String[] parSortSlip = parSort.split("~");
+                    orderBy = parSortSlip[0];
+                    orderType = parSortSlip[1];
+                }
                 int page = Integer.parseInt(parPage);
                 int size = 3;
-                ArrayList<Product> listProducts = ProductDao.filterProducts(productName, minPrice, maxPrice, categoryId, colorId, rating, page, size);
+                ArrayList<Product> listProducts = ProductDao.filterProducts(productName, minPrice, maxPrice, categoryId, colorId, rating, page, size, orderBy, orderType);
                 int count = ProductDao.countFilterProducts(productName, minPrice, maxPrice, categoryId, colorId, rating);
                 int totalPage = (int) Math.ceil((double) count / (double) size);
                 request.setAttribute("listProducts", listProducts);
