@@ -35,12 +35,7 @@
             </div>
         </div>
         <div>
-            <div class="inline-block">
-                <form class="inline-block mx-4" method="GET" action="search">
-                    <input id="keySearch" name="keySearch" type="text" placeholder="Search" class="px-4 m-0 py-2 rounded-l-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-400" />
-                    <button type="submit" class="m-0 bg-gray-500 text-white px-4 py-2 rounded-r-lg">Search</button>
-                </form>
-            </div>
+
             <%
                 if (account != null) {
             %>
@@ -54,11 +49,10 @@
             <%
             } else {
             %>
-            <a href="login">
+            <a href="login" class='font-bold px-6 py-1 border mr-2' style="border-color: black; border-radius: 10px">
                 Login
             </a>
-            |
-            <a href="register">
+            <a href="register" class='font-bold px-6 py-1 border' style="border-color: black; border-radius: 10px">
                 Register
             </a>
             <%
