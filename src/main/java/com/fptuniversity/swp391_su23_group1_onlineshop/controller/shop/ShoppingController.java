@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import com.fptuniversity.swp391_su23_group1_onlineshop.dao.ProductDao;
 import com.fptuniversity.swp391_su23_group1_onlineshop.model.Product;
 import jakarta.servlet.annotation.WebServlet;
-import java.sql.Array;
 
 /**
  *

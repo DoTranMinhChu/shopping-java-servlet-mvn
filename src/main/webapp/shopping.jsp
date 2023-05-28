@@ -10,16 +10,6 @@
         <link rel="stylesheet" href="styles/tailwindcss/tailwind-all.min.css">
         <link rel="stylesheet" href="styles/css/product.css"/>
         <script src="script/index.js"></script>
-
-        <script>
-            let params = (new URL(document.location)).searchParams;
-            let sortOrder = params.get("orderPopular");
-            function toggleSort() {
-                sortOrder = sortOrder === 'ASC' ? 'DESC' : 'ASC';
-                appendParameter("orderPopular", sortOrder);
-            }
-
-        </script>
     </head>
     <body>
         <%

@@ -35,6 +35,12 @@
             </div>
         </div>
         <div>
+            <div class="inline-block">
+                <form class="inline-block mx-4" method="GET" action="search">
+                    <input id="key" name="key" type="text" placeholder="Search" class="px-4 m-0 py-2 rounded-l-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-400" />
+                    <button type="submit" class="m-0 bg-gray-500 text-white px-4 py-2 rounded-r-lg">Search</button>
+                </form>
+            </div>
             <%
                 if (account != null) {
             %>

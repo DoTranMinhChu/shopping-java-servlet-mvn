@@ -2,28 +2,22 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.fptuniversity.swp391_su23_group1_onlineshop.controller.blog;
+package com.fptuniversity.swp391_su23_group1_onlineshop.search;
 
-import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import com.fptuniversity.swp391_su23_group1_onlineshop.model.Post;
-import com.fptuniversity.swp391_su23_group1_onlineshop.dao.PostDao;
-import jakarta.servlet.annotation.WebServlet;
 
 /**
  *
  * @author dotra
  */
-@WebServlet(name = "BlogController", value = "/blog")
-public class BlogController extends HttpServlet {
-
-    private static final String SUCCESS_JSP = "blog.jsp";
-    private static final String BLOG_DETAIL_JSP = "blogDetail.jsp";
+@WebServlet(name = "SearchController", urlPatterns = {"/search"})
+public class SearchController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,44 +28,23 @@ public class BlogController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private static final String SUCCESS_JSP = "search.jsp";
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String url = SUCCESS_JSP;
-        try {
-
-            String id = request.getParameter("id");
-            if (id != null) {
-                Post post = PostDao.getPostById(Integer.parseInt(id));
-                url = BLOG_DETAIL_JSP;
-                request.setAttribute("post", post);
-            } else {
-                String parSort = request.getParameter("sort");
-                String parPage = request.getParameter("page");
-                if (parPage == null || parPage.isEmpty()) {
-                    parPage = "1";
-                }
-                String orderBy = null;
-                String orderType = null;
-                if (parSort != null && !parSort.isEmpty() && !"none".equals(parSort)) {
-                    String[] parSortSlip = parSort.split("~");
-                    orderBy = parSortSlip[0];
-                    orderType = parSortSlip[1];
-                }
-                int page = Integer.parseInt(parPage);
-                int size = 3;
-                ArrayList<Post> listPosts = PostDao.getAllPosts(page, size, orderBy, orderType);
-                int count = PostDao.countAllPosts();
-                int totalPage = (int) Math.ceil((double) count / (double) size);
-                request.setAttribute("totalPage", totalPage);
-                request.setAttribute("listPosts", listPosts);
-            }
-        } catch (Exception e) {
-        } finally {
-            RequestDispatcher dispatcher = request.getRequestDispatcher(url);
-            dispatcher.forward(request, response);
+        try ( PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet SearchController</title>");
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet SearchController at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

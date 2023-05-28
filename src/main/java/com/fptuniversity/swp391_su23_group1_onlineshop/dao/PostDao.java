@@ -22,12 +22,18 @@ import com.fptuniversity.swp391_su23_group1_onlineshop.util.ConnectionDB;
  */
 public class PostDao {
 
-    public static ArrayList<Post> getAllPosts(int page, int size) {
+    public static ArrayList<Post> getAllPosts(int page, int size, String orderBy, String orderType) {
         ArrayList<Post> postList = new ArrayList<>();
         int offset = size * (page - 1);
         try ( Connection cn = ConnectionDB.makeConnection()) {
             if (cn != null) {
-                StringBuilder sqlQuery = new StringBuilder("SELECT id, thumbnail_url, user_id, title, sort_description, content, created_at, deleted_at FROM posts ORDER BY created_at DESC");
+                StringBuilder sqlQuery = new StringBuilder("SELECT id, thumbnail_url, user_id, title, sort_description, content, created_at, deleted_at FROM posts ");
+
+                sqlQuery.append(" ORDER BY ");
+                if (orderBy != null && !orderBy.isEmpty()) {
+                    sqlQuery.append(orderBy).append(" ").append(orderType).append(" , ");
+                }
+                sqlQuery.append(" id ASC ");
                 sqlQuery.append(" OFFSET ").append(offset).append(" ROWS \nFETCH NEXT ").append(size).append(" ROWS ONLY");
                 try ( Statement st = cn.createStatement();  ResultSet rs = st.executeQuery(sqlQuery.toString())) {
                     while (rs.next()) {
