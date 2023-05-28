@@ -8,11 +8,12 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="styles/tailwindcss/tailwind-all.min.css">
-         <link rel="stylesheet" href="styles/css/product.css"/>
+        <link rel="stylesheet" href="styles/css/product.css"/>
         <script src="script/index.js"></script>
         <title>Search</title>
     </head>
     <body>
+        <jsp:include page="components/header.jsp" />
         <div class="w-full p-6">
             <div class="sorting-bar">
                 <label for="sort-select">Sort By:</label>
@@ -61,5 +62,6 @@
                 %>
             </div>
         </div>
+        <jsp:include page="components/footer.jsp" />
     </body>
 </html>
