@@ -14,8 +14,7 @@
                 var oldPassword = document.getElementById("oldPassword").value;
                 var newPassword = document.getElementById("newPassword").value;
                 var confirmPassword = document.getElementById("confirmPassword").value;
-                console.log(oldPassword);
-                console.log(newPassword);
+
                 if (newPassword !== confirmPassword) {
                     alert("Passwords do not match. Please try again.");
                     return false;
