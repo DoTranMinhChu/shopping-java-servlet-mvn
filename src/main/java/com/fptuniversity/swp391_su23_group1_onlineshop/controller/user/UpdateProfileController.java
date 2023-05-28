@@ -1,49 +1,58 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package com.fptuniversity.swp391_su23_group1_onlineshop.controller.user;
 
-/**
- *
- * @author Lenovo
- */
 import com.fptuniversity.swp391_su23_group1_onlineshop.dao.UserDao;
 import com.fptuniversity.swp391_su23_group1_onlineshop.model.User;
 import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.annotation.WebServlet;
+import java.io.IOException;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
-@WebServlet(name = "UserProfileController", value = "/userProfile")
-public class UserProfileController extends HttpServlet {
+/**
+ *
+ * @author dotra
+ */
+@WebServlet(name = "UpdateProfileController", urlPatterns = {"/updateProfile"})
+public class UpdateProfileController extends HttpServlet {
+
+    private static final String HOME_PAGE = "home";
+    private static final String PROFILE_PAGE_JSP = "userProfile.jsp";
+    private static final String PROFILE_PAGE = "userProfile";
+    private static final String FORWARD = "FORWARD";
+    private static final String SEND_REDIRECT = "SEND_REDIRECT";
 
     /**
-     * Processes requests for both HTTP <code>GET</code> methods.
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
      *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    private static final String HOME_PAGE = "home";
-    private static final String PROFILE_PAGE_JSP = "userProfile.jsp";
-    private static final String FORWARD = "FORWARD";
-    private static final String SEND_REDIRECT = "SEND_REDIRECT";
-
-    protected void processRequestDoGet(HttpServletRequest request, HttpServletResponse response)
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String type = FORWARD;
-        String url = PROFILE_PAGE_JSP;
-        try {
-            User user = (User) request.getSession().getAttribute("account_infomation");
+        String type = SEND_REDIRECT;
+        String url = PROFILE_PAGE;
 
-            User userInfomation = UserDao.getInfoUserById(user.getId());
-            request.setAttribute("userInfomation", userInfomation);
+        try {
+            String fullname = (String) request.getParameter("fullname");
+            String phone = (String) request.getParameter("phone");
+            String email = (String) request.getParameter("email");
+            String address = (String) request.getParameter("address");
+            User user = (User) request.getSession().getAttribute("account_infomation");
+            user.setFullname(fullname);
+            user.setPhone(phone);
+            user.setEmail(email);
+            user.setAddress(address);
+            boolean isSuccess = UserDao.updateUser(user);
 
         } catch (Exception ex) {
             type = SEND_REDIRECT;
@@ -61,24 +70,9 @@ public class UserProfileController extends HttpServlet {
                     throw new AssertionError();
             }
         }
-
     }
 
-    /**
-     * Processes requests for both HTTP <code>POST</code> methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequestDoPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-
-    }
-
-// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -90,7 +84,7 @@ public class UserProfileController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequestDoGet(request, response);
+//        processRequest(request, response);
     }
 
     /**
@@ -104,7 +98,7 @@ public class UserProfileController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequestDoPost(request, response);
+        processRequest(request, response);
     }
 
     /**

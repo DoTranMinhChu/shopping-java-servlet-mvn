@@ -280,10 +280,40 @@ public class UserDao {
                     ps.setString(5, user.getUsername());
                     ps.setString(6, user.getAddress());
                     ps.setString(7, user.getPhone());
-                    ps.setString(8, user.getPhone());
+                    ps.setString(8, user.getUserRole());
                     ps.setDate(9, user.getCreatedAt());
                     ps.setDate(10, user.getDeletedAt());
                     ps.setInt(11, user.getId());
+                    rowsAffected = ps.executeUpdate();
+                }
+                cn.close();
+
+                return rowsAffected > 0;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return false;
+    }
+
+    public static boolean updateInfoUser(User user) {
+        try ( Connection cn = ConnectionDB.makeConnection()) {
+            if (cn != null) {
+                String sqlQuery = "UPDATE users SET email=?, fullname=?,  "
+                        + "address=?, phone=? WHERE id=?";
+                int rowsAffected;
+                try ( PreparedStatement ps = cn.prepareStatement(sqlQuery)) {
+                    System.out.println("fullname " + user.getFullname());
+                    System.out.println("email " + user.getEmail());
+                    System.out.println("address " + user.getAddress());
+                    System.out.println("phone " + user.getPhone());
+                    System.out.println("id " + user.getId());
+                    ps.setString(1, user.getEmail());
+                    ps.setString(2, user.getFullname());
+                    ps.setString(3, user.getAddress());
+                    ps.setString(4, user.getPhone());
+                    ps.setInt(5, user.getId());
                     rowsAffected = ps.executeUpdate();
                 }
                 cn.close();

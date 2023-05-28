@@ -12,7 +12,6 @@ import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 
-
 /**
  *
  * @author dotra
@@ -85,7 +84,7 @@ public class RegisterController extends HttpServlet {
                 dispatcher.forward(request, response);
                 break;
             case SEND_REDIRECT:
-                response.sendRedirect(SEND_REDIRECT);
+                response.sendRedirect(url);
                 break;
             default:
                 throw new AssertionError();

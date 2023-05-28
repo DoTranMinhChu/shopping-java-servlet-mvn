@@ -8,7 +8,7 @@ CREATE TABLE users (
     username VARCHAR(100),
     avatar VARCHAR(255),
     email VARCHAR(100),
-    phone VARCHAR(11),
+    phone VARCHAR(15),
     password VARCHAR(100),
     address NVARCHAR(500),
 	user_role varchar(20) NOT NULL CHECK (user_role IN('customer','admin', 'seller', 'marketing')),
