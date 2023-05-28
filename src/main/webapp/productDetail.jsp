@@ -139,7 +139,7 @@
                         <span><h3 class="text-gray-700 mb-6 font-normal text-lg" style="color: #6B778D; text-decoration: line-through;">$<%= productPrice%></h3></span>
                     </div>
                 </div>
-       
+
             </div>
         </div>
     </div>
