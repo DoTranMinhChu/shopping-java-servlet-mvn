@@ -20,7 +20,7 @@
                     return false;
                 }
                 if (currentPassword != oldPassword) {
-                    alert("Current passwords. Please try again.");
+                    alert("Current passwords incorrect. Please try again.");
                     return false;
                 }
                 // Passwords match, continue with form submission
@@ -65,7 +65,7 @@
 
                     <div class="mb-4">
                         <label class="block text-sm font-bold mb-2" for="email">Email</label>
-                        <input class="border rounded px-3 py-2 w-full" type="email" id="email" name="email" value="<%= userProfile.getEmail() != null ? userProfile.getEmail() : ""%>">
+                        <input class="border rounded px-3 py-2 w-full" type="email" id="email" name="email" value="<%= userProfile.getEmail() != null ? userProfile.getEmail() : ""%>" <%=userProfile.getPassword() == null ? "disabled" : ""%>>
                     </div>
                     <div class="flex justify-end">
                         <button class="py-2 px-6 rounded mr-4 border-black border-2" >Edit profile</button>

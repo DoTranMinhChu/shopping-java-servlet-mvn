@@ -23,7 +23,7 @@ public class UserDao {
             if (cn != null) {
                 String sqlQuery = "SELECT id, email,avatar,password,fullname,username,phone,user_role,address,created_at,deleted_at \n"
                         + "FROM users \n"
-                        + "WHERE status=1 AND email = ? COLLATE Latin1_General_CS_AS";
+                        + "WHERE deleted_at IS NULL AND email = ?";
                 PreparedStatement pst = cn.prepareStatement(sqlQuery);
                 pst.setString(1, emailCheck);
                 ResultSet rs = pst.executeQuery();
@@ -126,6 +126,7 @@ public class UserDao {
         return user;
     }
 
+ 
     public static User userLoginByUsernameAndPassowrd(String inputUsername, String inputPassword) throws SQLException {
         User user = null;
         try ( Connection cn = ConnectionDB.makeConnection()) {
