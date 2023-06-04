@@ -1,3 +1,4 @@
+<%@page import="com.fptuniversity.swp391_su23_group1_onlineshop.model.Feedback"%>
 <%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="com.fptuniversity.swp391_su23_group1_onlineshop.model.Product"%>
@@ -62,26 +63,31 @@
         <div class="m-12 px-8 py-4" style="background: #D9D9D9">
             <div class='font-semibold text-xl '>CUSTOMER FEED BACK</div>
             <!--            map comment here-->
-            <div class='flex flex-1 justify-between my-3' style="background-color:  #808080">
-                <div class='flex flex-col text-center p-10 m-3' style="align-self: center;background-color: #D9D9D9; border-color: #D9D9D9">
-                    Rating
-                </div>
-                <div class='flex flex-col text-center m-3'>
-                    <div class='font-semibold text-lg border-2 px-60 py-1' style="background-color: #D9D9D9; border-color: #D9D9D9">
-                        FEEDBACK TITLE
-                    </div> 
-                    <div class='font-semibold text-lg border-2 px-60 py-4 mt-2' style="background-color: #D9D9D9; border-color: #D9D9D9">
-                        FEEDBACK DESCRIPTION
-                    </div> 
-                </div> 
-                <div class='flex flex-col text-center m-3'>
-                    <div class='flex flex-col text-center p-8 mb-2' style="align-self: center;background-color: #D9D9D9; border-color: #D9D9D9; border-radius: 100%">
-                        AVATA
+            <div class='flex flex-col justify-between my-3' >
+
+                <%
+                    ArrayList<Feedback> feedbackLists = (ArrayList<Feedback>) request.getAttribute("feedbackLists");
+                    for (int i = 0; i < feedbackLists.size(); i++) {
+                        Feedback feedback = feedbackLists.get(i);
+                %>
+                <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+                <div class="flex flex-col justify-between ">
+                    <div  class="flex flex-row ">
+                        <h2 class="font-bold text-lg flex justify-center items-center">
+                            Rating: <%= feedback.getRating()%>/5
+                        </h2>
+                        <p class="ml-10 flex justify-center items-center">
+                            <%= feedback.getContent()%>
+                        </p>
                     </div>
-                    <div class='flex flex-col text-center px-3' style="align-self: center;background-color: #D9D9D9; border-color: #D9D9D9">
-                        CREATE DATE
-                    </div>
+                    <p class="mt-4">
+                        By <%= feedback.getAuthorName()%> on <%= feedback.getCreatedAt()%>
+                    </p>
                 </div>
+
+                <%
+                    }
+                %>
             </div>
         </div>
         <div class='flex flex-col mx-auto text-center'>
