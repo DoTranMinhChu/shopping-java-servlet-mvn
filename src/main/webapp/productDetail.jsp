@@ -1,3 +1,4 @@
+<%@page import="java.text.DecimalFormat"%>
 <%@page import="com.fptuniversity.swp391_su23_group1_onlineshop.model.Feedback"%>
 <%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -41,8 +42,22 @@
             <div class="flex flex-col w-1/2">
                 <h1 class=" text-3xl font-bold mb-6 text-black font-semibold"><%=productName%></h1>
                 <div class="flex gap-4">
-                    <span><h3 class="text-gray-700 mb-6 font-semibold text-xl" style="color: #FF7315">$<%= productPrice%></h3></span>
+
+                    <%
+                        if (productPercentDiscount != 0) {
+
+                            float newPrice = productPrice * (1 - productPercentDiscount);
+                    %>
+                    <span><h3 class="text-gray-700 mb-6 font-semibold text-xl" style="color: #FF7315">$<%= newPrice%></h3></span>
                     <span><h3 class="text-gray-700 mb-6 font-semibold text-xl" style="color: #6B778D; text-decoration: line-through;">$<%= productPrice%></h3></span>
+                    <%
+                    } else {
+                    %>
+                    <span><h3 class="text-gray-700 mb-6 font-semibold text-xl" style="color: #FF7315">$<%= productPrice%></h3></span>
+                    <%
+                        }
+                    %>
+
                 </div>
                 <div>
                     <h2 class='font-semibold text-xl'>Description</h2>
