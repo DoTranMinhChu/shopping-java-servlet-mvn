@@ -1,3 +1,4 @@
+<%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="com.fptuniversity.swp391_su23_group1_onlineshop.model.Product"%>
 <%
@@ -91,54 +92,33 @@
                 Product with similarity
             </div>
             <div class="flex flex-1 justify-between mt-4 mx-6 gap-4">
-                <div>
+                <%
+                    ArrayList<Product> productSuggestions = (ArrayList<Product>) request.getAttribute("productSuggestions");
+                    for (int i = 0; i < productSuggestions.size(); i++) {
+                        Product item = productSuggestions.get(i);
+                        int itemProductId = item.getId();
+                        String itemProductThumbnailUrl = item.getThumbnailUrl();
+                        String itemProductName = item.getName();
+                        float itemProductPrice = item.getPrice();
+                %>
+                <a href="?id=<%=itemProductId%>">
                     <div>
-                        <img style="max-height: 320px; max-width: 250px" class="object-center" src="<%= productThumbnailUrl%>" alt="Post Thumbnail">
+
+                        <img style="max-height: 320px; max-width: 250px" class="object-center" src="<%= itemProductThumbnailUrl%>" alt="Post Thumbnail"/>
                     </div>
                     <div class='font-normal text-xl'>
-                        <%=productName%>
+                        <%=itemProductName%>
                     </div>
                     <div class="flex gap-4 flex-1 justify-center">
-                        <span><h3 class="text-gray-700 mb-6 font-normal text-lg" style="color: #FF7315">$<%= productPrice%></h3></span>
+                        <span><h3 class="text-gray-700 mb-6 font-normal text-lg" style="color: #FF7315">$<%= itemProductPrice%></h3></span>
                         <span><h3 class="text-gray-700 mb-6 font-normal text-lg" style="color: #6B778D; text-decoration: line-through;">$<%= productPrice%></h3></span>
                     </div>
-                </div>
-                <div>
-                    <div>
-                        <img style="max-height: 320px; max-width: 250px" class="object-center" src="<%= productThumbnailUrl%>" alt="Post Thumbnail">
-                    </div>
-                    <div class='font-normal text-xl'>
-                        <%=productName%>
-                    </div>
-                    <div class="flex gap-4 flex-1 justify-center">
-                        <span><h3 class="text-gray-700 mb-6 font-normal text-lg" style="color: #FF7315">$<%= productPrice%></h3></span>
-                        <span><h3 class="text-gray-700 mb-6 font-normal text-lg" style="color: #6B778D; text-decoration: line-through;">$<%= productPrice%></h3></span>
-                    </div>
-                </div>
-                <div>
-                    <div>
-                        <img style="max-height: 320px; max-width: 250px" class="object-center" src="<%= productThumbnailUrl%>" alt="Post Thumbnail">
-                    </div>
-                    <div class='font-normal text-xl'>
-                        <%=productName%>
-                    </div>
-                    <div class="flex gap-4 flex-1 justify-center">
-                        <span><h3 class="text-gray-700 mb-6 font-normal text-lg" style="color: #FF7315">$<%= productPrice%></h3></span>
-                        <span><h3 class="text-gray-700 mb-6 font-normal text-lg" style="color: #6B778D; text-decoration: line-through;">$<%= productPrice%></h3></span>
-                    </div>
-                </div>
-                <div>
-                    <div>
-                        <img style="max-height: 320px; max-width: 250px" class="object-center" src="<%= productThumbnailUrl%>" alt="Post Thumbnail">
-                    </div>
-                    <div class='font-normal text-xl'>
-                        <%=productName%>
-                    </div>
-                    <div class="flex gap-4 flex-1 justify-center">
-                        <span><h3 class="text-gray-700 mb-6 font-normal text-lg" style="color: #FF7315">$<%= productPrice%></h3></span>
-                        <span><h3 class="text-gray-700 mb-6 font-normal text-lg" style="color: #6B778D; text-decoration: line-through;">$<%= productPrice%></h3></span>
-                    </div>
-                </div>
+                </a>
+                <%
+                    }
+                %>
+
+
 
             </div>
         </div>

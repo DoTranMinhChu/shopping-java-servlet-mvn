@@ -44,8 +44,11 @@ public class ShoppingController extends HttpServlet {
             String id = request.getParameter("id");
             if (id != null) {
                 Product product = ProductDao.getProductById(Integer.parseInt(id));
+                ArrayList<Product> productSuggestions = ProductDao.getProductSuggestions(Integer.parseInt(id));
                 url = PRODUCT_DETAIL_JSP;
+
                 request.setAttribute("product", product);
+                request.setAttribute("productSuggestions", productSuggestions);
             } else {
                 String parProductName = request.getParameter("productName");
                 String parMinPricePrice = request.getParameter("minPrice");
