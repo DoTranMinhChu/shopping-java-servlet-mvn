@@ -24,6 +24,8 @@ import jakarta.servlet.http.Part;
 import java.net.URLEncoder;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.Charset;
 
 @WebServlet(name = "UploadAvatarController", urlPatterns = {"/upload-avatar"})
 @MultipartConfig
@@ -49,23 +51,39 @@ public class UploadAvatarController extends HttpServlet {
 
         try {
             // Convert the image file to Base64 encoding
-            byte[] imageData = fileInputStream.readAllBytes();
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            int nRead;
+            byte[] data = new byte[16384];
+            while ((nRead = fileInputStream.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+            buffer.flush();
+            byte[] imageData = buffer.toByteArray();
             String base64Image = Base64.getEncoder().encodeToString(imageData);
 
             // Make the API request to ImgBB
             String apiKey = "c6129008f002d0ce594896a5236edc4a";
             String apiEndpoint = "https://api.imgbb.com/1/upload";
-            String payload = "key=" + apiKey + "&image=" + URLEncoder.encode(base64Image, StandardCharsets.UTF_8);
+            String payload = "key=" + apiKey + "&image=" + java.net.URLEncoder.encode(base64Image, "UTF-8");
 
             URL url = new URL(apiEndpoint);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
-            conn.getOutputStream().write(payload.getBytes(StandardCharsets.UTF_8));
+            OutputStream outputStream = conn.getOutputStream();
+            outputStream.write(payload.getBytes(Charset.forName("UTF-8")));
+            outputStream.flush();
 
             // Read the API response
             InputStream responseStream = conn.getInputStream();
-            String apiResponse = new String(responseStream.readAllBytes(), StandardCharsets.UTF_8);
+            ByteArrayOutputStream responseBuffer = new ByteArrayOutputStream();
+            int readByte;
+            while ((readByte = responseStream.read()) != -1) {
+                responseBuffer.write(readByte);
+            }
+            byte[] responseBytes = responseBuffer.toByteArray();
+
+            String apiResponse = new String(responseBytes, Charset.forName("UTF-8"));
             responseStream.close();
 
             JsonObject jsonResponse = new Gson().fromJson(apiResponse, JsonObject.class);
@@ -77,8 +95,8 @@ public class UploadAvatarController extends HttpServlet {
 
             UserDao.updateUser(user);
             HttpSession session = request.getSession(true);
-            User userInfomation = UserDao.getInfoUserById(user.getId());
-            session.setAttribute(SESSION_ACCOUNT_INFOMATION, userInfomation);
+            User userInformation = UserDao.getInfoUserById(user.getId());
+            session.setAttribute(SESSION_ACCOUNT_INFOMATION, userInformation);
 
             // Redirect to the userProfile page
             response.sendRedirect(PROFILE_PAGE);
